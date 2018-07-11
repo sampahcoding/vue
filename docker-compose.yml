@@ -1,0 +1,28 @@
+version: '3'
+
+volumes:
+  vue_modules:
+    driver: local
+
+services:
+################################
+#   Setup node container
+################################
+  server:
+    image: node:8.0.0
+    ports:
+      - 8081:8081
+    environment:
+      SERVER_NAME: ""
+    volumes:
+      - .:/vue
+    stdin_open: true
+    tty: true
+    command: "/bin/sh -c 'cd /vue && npm run dev'"
+  bash:
+    image: node:8.0.0
+    volumes:
+      - .:/vue
+    stdin_open: true
+    tty: true
+    command: /bin/sh
