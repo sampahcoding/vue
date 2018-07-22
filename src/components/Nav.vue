@@ -2,10 +2,10 @@
   <div class="menus">
     <ul>
       <li>
-        <router-link to="/">home</router-link>
+        <router-link to="/">Home</router-link>
       </li>
       <li>
-        <router-link to="/search">search</router-link>
+        <router-link to="/search">Search</router-link>
       </li>
     </ul>
     <ul class="menus__right">

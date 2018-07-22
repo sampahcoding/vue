@@ -18,7 +18,7 @@ services:
       - .:/vue
     stdin_open: true
     tty: true
-    command: "/bin/sh -c 'cd /vue && npm run dev'"
+    command: "/bin/sh -c 'cd /vue && npm run dev --unsafe-perm'"
   bash:
     image: node:8.0.0
     volumes:
