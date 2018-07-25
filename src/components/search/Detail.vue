@@ -6,7 +6,7 @@
       <div v-if="no_result === true">No Result detail id "{{ id }}"</div>
     </div>
     <div v-if="data.body !== ''">
-      <h2> {{ data.title }} </h2>
+      <h2 class="tdd-title"> {{ data.title }} </h2>
       <p v-for="i in 2" :key="i">
         <template v-for="m in 5">
           {{ data.body + m }}
@@ -36,7 +36,6 @@ export default {
   },
   data () {
     return {
-      msg: 'Hai this is detail page',
       id: this.$route.params.id,
       data: {
         title: '',
