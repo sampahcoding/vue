@@ -5,12 +5,12 @@
         <router-link to="/">Home</router-link>
       </li>
       <li>
-        <router-link to="/search">Search</router-link>
+        <router-link :to="{name: 'Search'}">Search</router-link>
       </li>
     </ul>
     <ul class="menus__right">
       <li>
-        <router-link to="/login">Login</router-link>
+        <router-link :to="{name: 'login'}">Login</router-link>
       </li>
       <li>
         <router-link to="/">Register</router-link>

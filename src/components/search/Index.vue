@@ -18,13 +18,13 @@
       <div v-if="no_result === true">No Result for "{{ q }}"</div>
     </div>
     <ul class="search-result" v-if="progress === false && reload === false && no_result === false">
-      <li v-for="photo in photos" :key="photo.id" class="flex-grid">
+      <li v-for="data in datas" :key="data.id" class="flex-grid">
         <div class="no-img"><span>Not found</span></div>
-        <img :src="'https://picsum.photos/200/300/?image='+ photo.id" class="col-1"/>
+        <img :src="'https://picsum.photos/200/300/?image='+ data.id" class="col-1"/>
         <div class="col-2">
-          <router-link :to="'/detail/' + photo.id">{{ photo.title }}</router-link>
+          <router-link :to="{ name: 'detail', params: { id: data.id }}">{{ data.title }}</router-link>
           <div class="search-result__subcontent">
-            <template v-for="tag in photo.title.split(' ', 2)" >
+            <template v-for="tag in data.title.split(' ', 2)" >
               <span class="label" :key="tag">{{ tag }}</span>
             </template>
             <br>
@@ -39,6 +39,13 @@
 <script>
 import Placeholder from './IndexPlaceholder'
 import Reload from './Reload'
+import { searchArticles } from '../../api/searchArticles'
+var initData = {
+  datas: [],
+  progress: true,
+  reload: false,
+  no_result: false
+}
 export default {
   name: 'Index',
   components: {
@@ -47,10 +54,7 @@ export default {
   },
   data () {
     return {
-      photos: [],
-      progress: true,
-      reload: false,
-      no_result: false,
+      ...initData,
       sortby: this.$route.query._sort || 'id',
       q: this.$route.query.q
     }
@@ -60,28 +64,18 @@ export default {
   },
   methods: {
     update: function (e) {
-      this.progress = true
-      this.reload = false
-      this.no_result = false
-      this.$http.get('https://jsonplaceholder.typicode.com/photos?_limit=15', {params: {q: this.q, _sort: this.sortby}})
-        .then(function (response) {
-          return new Promise((resolve, reject) => {
-            setTimeout(() => {
-              this.photos = response.data
-              if (response.data.length === 0) {
-                this.no_result = true
-              }
-              this.progress = false
-            }, 2000)
-            this.$router.push({ name: 'Search', query: { q: this.q, _sort: this.sortby } })
-          })
-        }, function (error) {
-          setTimeout(() => {
-            console.log(error.status)
-            this.progress = false
-            this.reload = true
-          }, 1000)
-        })
+      let self = this
+      Object.assign(this.$data, initData)
+      // will use promise all for other api call maybe
+      let promises = Promise.all([searchArticles(self.q, self.sortby)])
+      promises.then(function (results) {
+        let delay = results[0].delay
+        setTimeout(() => {
+          console.log(results)
+          Object.assign(self.$data, results[0])
+          self.$router.push({ name: 'Search', query: { q: self.q, _sort: self.sortby } })
+        }, delay)
+      })
     },
     updateSortby: function (val) {
       this.sortby = val

@@ -4,7 +4,7 @@
       <img src="./assets/logo.png" class="icon">
       <navigation></navigation>
     </header>
-    <router-view/>
+    <router-view :key="$route.fullPath"/>
   </div>
 </template>
 

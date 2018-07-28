@@ -5,7 +5,7 @@
       <Reload v-if="reload === true"></Reload>
       <div v-if="no_result === true">No Result detail id "{{ id }}"</div>
     </div>
-    <div v-if="data.body !== ''">
+    <div v-if="Object.keys(data).length > 0">
       <h2 class="tdd-title"> {{ data.title }} </h2>
       <p v-for="i in 2" :key="i">
         <template v-for="m in 5">
@@ -22,62 +22,53 @@
         </div>
       </div>
     </div>
+    <RelatedArticles :RelatedArticles="datas"/>
   </div>
 </template>
 
 <script>
 import Placeholder from './DetailPlaceholder'
+import { getArticle, getRelatedArticles } from '../../api/Articles'
 import Reload from './Reload'
+import RelatedArticles from './RelatedArticles'
+var initData = {
+  progress: true,
+  reload: false,
+  no_result: false,
+  datas: []
+}
+
 export default {
   name: 'Detail',
   components: {
     'Placeholder': Placeholder,
-    'Reload': Reload
+    'Reload': Reload,
+    'RelatedArticles': RelatedArticles
   },
   data () {
     return {
+      ...initData,
       id: this.$route.params.id,
-      data: {
-        title: '',
-        body: ''
-      },
-      progress: true,
-      reload: false
+      data: {}
     }
   },
   created: function () {
-    this.getData()
+    this.getArticle()
   },
   methods: {
-    getData: function (e) {
-      this.progress = true
-      this.reload = false
-      this.no_result = false
-      this.$http.get('https://jsonplaceholder.typicode.com/posts/' + this.id)
-        .then(function (response) {
-          return new Promise((resolve, reject) => {
-            setTimeout(() => {
-              this.data = response.data
-              if (response.data.length === 0) {
-                this.no_result = true
-              }
-              this.progress = false
-            }, 2000)
-          })
-        }, function (error) {
-          setTimeout(() => {
-            console.log(error.status)
-            if (error.status === 404) {
-              this.no_result = true
-            } else {
-              this.reload = true
-            }
-            this.progress = false
-          }, 1000)
-        })
+    getArticle: function (e) {
+      let self = this
+      Object.assign(self.$data, initData)
+      let promises = Promise.all([getArticle(this.id), getRelatedArticles(3)])
+      promises.then(function (results) {
+        let delay = results[0].delay
+        setTimeout(() => {
+          Object.assign(self.$data, results[0], results[1])
+        }, delay)
+      })
     },
     doReload: function () {
-      this.getData()
+      this.getArticle()
     }
   }
 }
@@ -119,6 +110,6 @@ time {
 .no-result {
   font-size: 1em;
   text-align: center;
-  margin-top: 100px;
+  margin: 200px 0;
 }
 </style>
