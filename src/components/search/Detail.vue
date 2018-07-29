@@ -1,9 +1,9 @@
 <template>
   <div class="detail">
-    <Placeholder v-if="progress === true"></Placeholder>
+    <Placeholder v-if="progress === true" class="tdd-progress"></Placeholder>
     <div class="no-result" v-if="reload === true || no_result === true">
-      <Reload v-if="reload === true"></Reload>
-      <div v-if="no_result === true">No Result detail id "{{ id }}"</div>
+      <Reload v-if="reload === true" class="tdd-reload"></Reload>
+      <div v-if="no_result === true" class="tdd-no-result">No Result detail id "{{ id }}"</div>
     </div>
     <div v-if="Object.keys(data).length > 0">
       <h2 class="tdd-title"> {{ data.title }} </h2>

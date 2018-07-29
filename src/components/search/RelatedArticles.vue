@@ -22,6 +22,8 @@ export default {
   list-style-type: none;
   margin: 2em 0 0 0;
   padding: 0;
+  flex-flow: row wrap;
+  justify-content: space-around;
 }
 .flex-3 li {
   margin-right: 5%;
