@@ -71,7 +71,6 @@ export default {
       promises.then(function (results) {
         let delay = results[0].delay
         setTimeout(() => {
-          console.log(results)
           Object.assign(self.$data, results[0])
           self.$router.push({ name: 'Search', query: { q: self.q, _sort: self.sortby } })
         }, delay)

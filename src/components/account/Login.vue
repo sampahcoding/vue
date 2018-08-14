@@ -4,14 +4,14 @@
     <form @submit="submit">
       <fieldset>
         <label>Username</label>
-        <input type="text" v-model="username">
+        <input type="text" v-model="username" :disabled="progress === true">
       </fieldset>
       <fieldset>
         <label>Password</label>
-        <input type="password" v-model="password">
+        <input type="password" v-model="password" :disabled="progress === true">
       </fieldset>
       <fieldset>
-        <button type="submit">Login</button>
+        <button type="submit" :disabled="progress === true">Login</button>
         or <router-link to="/">Register</router-link>
       </fieldset>
     </form>
@@ -25,31 +25,29 @@ export default {
     return {
       username: '',
       password: '',
-      error: false
+      error: false,
+      progress: false
     }
-  },
-  created: function () {
   },
   methods: {
     submit: function (e) {
       e.preventDefault()
-      this.progress = true
-      this.reload = false
-      this.no_result = false
+      Object.assign(this.$data, {progress: true})
+      let self = this
       this.$http.post('https://reqres.in/api/login', {username: this.username, password: this.password})
         .then(function (response) {
           return new Promise((resolve, reject) => {
             setTimeout(() => {
               if (response.data.token) {
-                this.$router.push('search')
+                return this.$router.push('search')
               }
-              this.error = false
+              Object.assign(self.$data, {progress: false, error: false})
             }, 2000)
           })
         }, function (err) {
           console.log(err.error)
           setTimeout(() => {
-            this.error = true
+            Object.assign(self.$data, {progress: false, error: true})
           }, 1000)
         })
     }
@@ -74,6 +72,7 @@ input {
 .login {
   max-width: 200px;
   margin: 8em auto;
+  position: relative;
 }
 
 button {

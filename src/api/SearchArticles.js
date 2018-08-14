@@ -12,8 +12,7 @@ var articles = {
 }
 
 export const searchArticles = (q, sortby = 'ID') => {
-  articles.sortby = sortby
-  articles.q = q
+  articles = {...articles, sortby: sortby, q: q}
   return Vue.http.get('https://jsonplaceholder.typicode.com/posts', {params: {_limit: 15, q: q, _sort: sortby}}, { timeout: 2000 })
     .then(function (response) {
       if (response.data.length === 0) {

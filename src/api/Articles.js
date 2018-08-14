@@ -34,7 +34,8 @@ export const getArticle = (id) => {
 }
 
 export const getRelatedArticles = (limit = 3) => {
-  return Vue.http.get('https://jsonplaceholder.typicode.com/posts', {params: {_limit: limit}}, { timeout: 2000 })
+  let random = Math.floor(Math.random() * 10)
+  return Vue.http.get('https://jsonplaceholder.typicode.com/posts', {params: {_limit: limit, _page: random}}, { timeout: 2000 })
     .then(function (response) {
       return {...relatedArticles, datas: response.body}
     }, function (error) {
